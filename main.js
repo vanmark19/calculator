@@ -8,11 +8,21 @@ const smallText = document.querySelector('.small');
 const equalBtn = document.querySelectorAll('#equal, .inner-equal');
 let point = false;
 let isEqualClicked = false;
+let reset = false;
 
 pointBtn.forEach(div => {
 
   div.addEventListener('click', e => {
     e.stopPropagation();
+    if (isEqualClicked)
+      isEqualClicked = false;
+    
+
+    if (reset){
+      smallText.textContent = bigText.textContent;
+      reset = false;
+     
+    }
 
     if (!point){
       if (smallText.textContent === '' || bigText.textContent === '0')
@@ -33,9 +43,21 @@ btns.forEach(btn => {
       id = btn.id;
     else
       id = btn.parentElement.id;
+    
+    if (isEqualClicked)
+      isEqualClicked = false;
+
+    
+
     if(!operations.includes(id)){
       if (bigText.textContent === '0')
         bigText.textContent = id;
+      else if(reset){
+        bigText.textContent = '0';
+        smallText.textContent = '';
+        reset = false;
+        isEqualClicked = false;
+      }
       else 
         bigText.textContent += id;
       smallText.textContent += id;
@@ -43,10 +65,18 @@ btns.forEach(btn => {
 
     } else if (specificOperations.includes(id)){
         point = false;
+      
+      if (reset){
 
+        smallText.textContent = bigText.textContent;
+        reset = false;
+       
+      }
       bigText.textContent = '0';
       smallText.textContent += ` ${e.target.textContent} `;
     }
+
+    
   });
 });
 
@@ -63,7 +93,8 @@ delBtns.forEach(btn => {
       id = btn.id;
     else
       id = btn.parentElement.id;
-      
+    
+  
     if (id === 'backspace'){
       if (bigText.textContent !== '0'){
         if (bigText.textContent[bigText.textContent.length - 1] === '.')
@@ -89,7 +120,12 @@ equalBtn.forEach(div => {
       let ans = smallText.textContent;
       ans = ans.replaceAll('÷', '/');
       ans = ans.replaceAll('x', '*');
-      ans = eval(ans).toString();
+      ans = ans.split(' ');
+      console.log(ans);
+      
+      
+      
+      reset = true;
       if (ans.length >= 12)
         bigText.textContent = ans.slice(0, 11);
       else
@@ -103,15 +139,6 @@ equalBtn.forEach(div => {
     
   });
 });
-
-
-
-
-
-
-
-
-
 
 
 
